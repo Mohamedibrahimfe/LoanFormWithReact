@@ -11,16 +11,29 @@ export default function Form() {
     isButtonShown: false,
   });
 
+  const [showModal, setShowModal] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState(null);
   function hanldeSubmit(e) {
-    if (form.name !== "" && form.phone !== "" && form.age !== "") {
-      setForm({ ...form, isButtonShown: true });
-      alert("nio");
+    setErrorMessage(null);
+    if (form.age < 18 || form.age > 60) {
+      setErrorMessage("Age must be between 18 and 60");
     }
+    if (form.phone.length !== 10) {
+      setErrorMessage("Phone number must be 10 digits");
+    }
+    setShowModal(true);
   }
   const inputsAreEmpty =
     form.name === "" || form.phone === "" || form.age === "";
+
+  function hanldeDivClick() {
+    if (showModal) {
+      setShowModal(false);
+    }
+  }
   return (
-    <div className="form">
+    <div onClick={hanldeDivClick} className="form">
       <h1>Requesting a Loan </h1>
       <hr />
       <input
@@ -36,13 +49,13 @@ export default function Form() {
         onChange={(e) => {
           setForm({ ...form, phone: e.target.value });
         }}
-        type="text"
+        type="number"
         placeholder="Phone Number"
       />
       <input
         value={form.age}
         onChange={(e) => setForm({ ...form, age: e.target.value })}
-        type="text"
+        type="number"
         placeholder="age"
       />
       <label>R U an Employee</label>
@@ -70,7 +83,7 @@ export default function Form() {
       >
         Submit
       </button>
-      {/* <Modal showModal={showModal} /> */}
+      <Modal isVisible={showModal} errorMessage={errorMessage} />
     </div>
   );
 }
